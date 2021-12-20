@@ -20,6 +20,7 @@ typedef struct
     const char* longkey;
     const char* description;
     const char* value;
+    bool required;
     ArgzNode _m_node;
 } ArgzKeyword;
 

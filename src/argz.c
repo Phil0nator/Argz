@@ -248,6 +248,14 @@ int argzParse( ArgzParser* parser )
         error(parser, "Missing positional", testPositional->name );
     }
 
+    for ( ArgzKeyword* kit = parser->m_keyword_base; kit->_m_node.next ; kit = kit->_m_node.next )
+    {
+        if (kit->required &&! kit->value)
+        {
+            error(parser, "Missing required keyword", kit->shortkey);
+        }
+    }
+
 }
 
 
