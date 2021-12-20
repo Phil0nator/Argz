@@ -230,6 +230,7 @@ int argzParse( ArgzParser* parser )
         if (parser->argv[i][0] == '-')
         {
             parseFlagOrKeyword( parser, i, parser->argv );
+            i++;
         }
         else
         {
