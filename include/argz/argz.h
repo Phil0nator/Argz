@@ -44,7 +44,7 @@ typedef struct
 typedef struct
 {
     const char* option;
-    struct ArgzParser* parser;
+    void* parser;
 } ArgzSubswitch;
 
 typedef struct
