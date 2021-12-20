@@ -110,7 +110,7 @@ static void error( ArgzParser* parser, const char* message, const char* subject 
         printf("%s: %s\n", progname, message);
     }
 
-    printf("usage: %s", progname);
+    printf("usage: %s ", progname);
 
 
 
@@ -140,25 +140,27 @@ static void error( ArgzParser* parser, const char* message, const char* subject 
     putc('\n', stdout);
 
     // descriptions 
-
+    printf("Flag Arguments: \n");
     ArgzFlag* fptr = parser->m_flag_base;
     while (fptr)
     {
-        printf("%s, %s, \t%s\n", fptr->shortkey, fptr->longkey, fptr->description);
+        printf("\t%s, %s, \t%s\n", fptr->shortkey, fptr->longkey, fptr->description);
         fptr = fptr->_m_node.next;
     }
 
+    printf("Keyword Arguments: \n");
     ArgzKeyword* kptr = parser->m_keyword_base;
     while (kptr)
     {
-        printf("%s, %s, \t%s\n", kptr->shortkey, kptr->longkey, kptr->description);
+        printf("\t%s, %s, \t%s\n", kptr->shortkey, kptr->longkey, kptr->description);
         kptr = kptr->_m_node.next;
     }
 
+    printf("Positional Arguments: \n");
     ArgzPositional* pptr = parser->m_positional_base;
     while (pptr)
     {
-        printf("%s \t%s\n", pptr->name, pptr->description);
+        printf("\t%s \t%s\n", pptr->name, pptr->description);
         pptr = pptr->_m_node.next;
     }
 
