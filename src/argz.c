@@ -320,3 +320,12 @@ void argzAddPositional( ArgzParser* parser, ArgzPositional* positional )
         parser->m_positional_base = positional;
     }
 }
+
+
+void argzCreateParser( ArgzParser* parser, int argc, const char** argv, const char* program_name )
+{
+    memset(parser, 0, sizeof(ArgzParser));
+    parser->argc = argc;
+    parser->argv = argv;
+    parser->progname = program_name;
+}

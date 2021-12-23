@@ -81,6 +81,17 @@ void argzAddKeyword( ArgzParser* parser, ArgzKeyword* keyword );
  */
 void argzAddPositional( ArgzParser* parser, ArgzPositional* positional );
 
+/**
+ * @brief initialize a parser. (Using the parser before a call to this function 
+ * is undefined behavior)
+ * 
+ * @param parser the destination parser
+ * @param argc argc provided to main
+ * @param argv argv provided to main
+ * @param program_name a name for your program
+ */
+void argzCreateParser( ArgzParser* parser, int argc, const char** argv, const char* program_name );
+
 void argzRequireFlag( ArgzFlag* flag );
 void argzRequireKeyword( ArgzKeyword* keyword );
 void argzRequirePositional( ArgzPositional* positional );
