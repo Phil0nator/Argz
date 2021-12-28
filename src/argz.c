@@ -6,6 +6,10 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+#define ARGZ_FLAG 0
+#define ARGZ_KEYWORD 1
+#define ARGZ_POSITIONAL 2
+
 /**
  * Determine if two strings, a and b, are equal
  * @param a string 1
@@ -181,6 +185,7 @@ static int parseFlagOrKeyword( ArgzParser* parser, size_t i, const char** argv )
     {
         // flag
         flag->present = true;
+        return ARGZ_FLAG;
     }
     else 
     {
@@ -214,6 +219,7 @@ static int parseFlagOrKeyword( ArgzParser* parser, size_t i, const char** argv )
         }
         // keyword
     }
+    return ARGZ_KEYWORD;
 
 }
 
@@ -233,8 +239,10 @@ int argzParse( ArgzParser* parser )
     {
         if (parser->argv[i][0] == '-')
         {
-            parseFlagOrKeyword( parser, i, parser->argv );
-            i++;
+            if (parseFlagOrKeyword( parser, i, parser->argv ) == ARGZ_KEYWORD)
+            {
+                i++;
+            }
         }
         else
         {
@@ -267,7 +275,7 @@ int argzParse( ArgzParser* parser )
 
     // check for missing keywords
 
-    for ( ArgzKeyword* kit = parser->m_keyword_base; kit->_m_node.next ; kit = kit->_m_node.next )
+    for ( ArgzKeyword* kit = parser->m_keyword_base; kit; kit = kit->_m_node.next )
     {
         if (kit->required &&! kit->value)
         {
