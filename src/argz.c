@@ -95,25 +95,11 @@ static const char* formatKeywordName( const char* name )
 }
 
 
-/**
- * Terminate parsing, and throw an error to stderr
- */
-static void error( ArgzParser* parser, const char* message, const char* subject )
+
+static void display_help( ArgzParser* parser )
 {
-    const char* progname = parser->progname ? parser->progname : parser->argv[0];
-    if (subject)
-    {
-        printf("%s: %s: %s\n", progname, message, subject);
-    }
-    else
-    {
-        printf("%s: %s\n", progname, message);
-    }
-
-    printf("usage: %s ", progname);
-
-
-
+    printf("usage: %s ", parser->progname);
+    
     {
         ArgzFlag* fptr = parser->m_flag_base;
         while (fptr)
@@ -140,7 +126,7 @@ static void error( ArgzParser* parser, const char* message, const char* subject 
     putc('\n', stdout);
 
     // descriptions 
-    printf("Flag Arguments: \n");
+    if (parser->m_flag_base) printf("Flag Arguments: \n");
     ArgzFlag* fptr = parser->m_flag_base;
     while (fptr)
     {
@@ -148,7 +134,7 @@ static void error( ArgzParser* parser, const char* message, const char* subject 
         fptr = fptr->_m_node.next;
     }
 
-    printf("Keyword Arguments: \n");
+    if (parser->m_keyword_base) printf("Keyword Arguments: \n");
     ArgzKeyword* kptr = parser->m_keyword_base;
     while (kptr)
     {
@@ -156,20 +142,31 @@ static void error( ArgzParser* parser, const char* message, const char* subject 
         kptr = kptr->_m_node.next;
     }
 
-    printf("Positional Arguments: \n");
+    if (parser->m_positional_base) printf("Positional Arguments: \n");
     ArgzPositional* pptr = parser->m_positional_base;
     while (pptr)
     {
         printf("\t%s \t%s\n", pptr->name, pptr->description);
         pptr = pptr->_m_node.next;
     }
+}
 
-
-
-
-    
-
-
+/**
+ * Terminate parsing, and throw an error to stderr
+ */
+static void error( ArgzParser* parser, const char* message, const char* subject )
+{
+    const char* progname = parser->progname ? parser->progname : parser->argv[0];
+    parser->progname = progname;
+    if (subject)
+    {
+        printf("%s: %s: %s\n", progname, message, subject);
+    }
+    else
+    {
+        printf("%s: %s\n", progname, message);
+    }
+    display_help(parser);
     exit(1);
 }
 
@@ -225,6 +222,13 @@ static int parseFlagOrKeyword( ArgzParser* parser, size_t i, const char** argv )
  */
 int argzParse( ArgzParser* parser )
 {
+    ArgzFlag helpflag;
+    helpflag.description = "Display this help message";
+    helpflag.longkey = "--help";
+    helpflag.shortkey = "-h";
+    argzAddFlag( parser, &helpflag );
+    
+    // check for flags, and collect values for positionals
     for ( size_t i = 1; i < parser->argc; i++ )
     {
         if (parser->argv[i][0] == '-')
@@ -243,11 +247,25 @@ int argzParse( ArgzParser* parser )
         }
     }
 
+    // help flag
+
+    if ( helpflag.present )
+    {
+        if (!parser->progname) parser->progname = parser->argv[0];
+        display_help(parser);
+        exit(0);
+    }
+
+    // check for missing positionals
+
+
     ArgzPositional* testPositional;
     if ( testPositional = getPositional(parser) )
     {
         error(parser, "Missing positional", testPositional->name );
     }
+
+    // check for missing keywords
 
     for ( ArgzKeyword* kit = parser->m_keyword_base; kit->_m_node.next ; kit = kit->_m_node.next )
     {
@@ -256,6 +274,8 @@ int argzParse( ArgzParser* parser )
             error(parser, "Missing required keyword", kit->shortkey);
         }
     }
+
+    
 
 }
 
