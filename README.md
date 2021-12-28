@@ -1,6 +1,7 @@
 # Argz
 
-Argz is a lightweight commandline argument parsing library written in plain C. In order to be as lightweight as possible, the implimentation doesn't use any dynamic allocation, and relies only on the basic C standard library functions like strcpy, etc...
+Argz is a basic lightweight commandline argument parsing library written in plain C. In order to be as lightweight as possible, the implimentation doesn't use any dynamic allocation, and relies only on the basic C standard library functions like strcpy, etc...
+Argz is best suited to use cases where the expected arguments are just a simple mix of flags, keywords, and positionals. Beyond that, a more complex library would probably be more useful.
 
 ## Hello World Parser
 
